@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Consumption Chart</title>
+  <!-- Include the charting library -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <canvas id="energyChart"></canvas>
+
+  <!-- Add a script tag to fetch and process the JSON data -->
+  <script>
+    // Fetch the JSON data
+    fetch('http://localhost:8080/energy')
+      .then(response => response.json())
+      .then(data => {
+        // Extract the timestamp and value from each data point
+        const timestamps = data.map(point => point.timestamp);
+        const values = data.map(point => point.units);
+
+        // Create a new chart instance
+        const ctx = document.getElementById('energyChart').getContext('2d');
+        new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: timestamps,
+            datasets: [{
+              label: 'Units',
+              data: values,
+              backgroundColor: 'rgba(0, 123, 255, 0.2)',
+              borderColor: 'rgba(0, 123, 255, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Date'
+                }
+              },
+              y: {
+                display: true,
+                title: {
+                  display: true,
+                  text: 'Units'
+                }
+              }
+            }
+          }
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
+  </script>
+</body>
+</html>
